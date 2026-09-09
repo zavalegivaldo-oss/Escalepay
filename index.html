@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#f5f6f7">
+<title>EscalePay — Dashboard</title>
+
+<style>
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+:root{
+--bg:#f5f6f7;
+--white:#fff;
+--text:#253446;
+--text-dark:#1d2c3d;
+--muted:#9aa2aa;
+--muted-dark:#818b96;
+--line:#e8ebee;
+--green:#0aa47f;
+--green-dark:#087e66;
+--green-soft:#edf7f4;
+--blue:#4b7fbd;
+--blue-soft:#f0f4f9;
+--red:#bd6477;
+--red-soft:#faf0f2;
+--navy:#172c45;
+--navy-2:#1a344b;
+}
+
+html,body{
+width:100%;
+min-height:100%;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+overflow-x:hidden;
+}
+
+button{
+font-family:inherit;
+border:0;
+outline:none;
+cursor:pointer;
+}
+
+.app{
+width:100%;
+max-width:430px;
+margin:0 auto;
+padding:6px 9px 35px;
+}
+
+.topbar{
+width:100%;
+height:44px;
+display:flex;
+align-items:center;
+gap:5px;
+margin-bottom:9px;
+}
+
+.menu{
+width:41px;
+height:41px;
+flex:none;
+border-radius:12px;
+background:#fff;
+border:1px solid var(--line);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.menu-lines,
+.menu-lines::before,
+.menu-lines::after{
+width:17px;
+height:2px;
+background:#536272;
+border-radius:3px;
+display:block;
+position:relative;
+}
+
+.menu-lines::before,
+.menu-lines::after{
+content:"";
+position:absolute;
+left:0;
+}
+
+.menu-lines::before{top:-5px;}
+.menu-lines::after{top:5px;}
+
+.avatar{
+width:41px;
+height:41px;
+flex:none;
+border-radius:50%;
+background:#168d73;
+color:#f4f7f6;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:11px;
+font-weight:800;
+}
+
+.products{
+flex:1;
+min-width:0;
+height:41px;
+background:#fff;
+border:1px solid var(--line);
+border-radius:12px;
+display:flex;
+align-items:center;
+gap:5px;
+padding:0 9px;
+color:#4a5969;
+font-size:10px;
+font-weight:600;
+white-space:nowrap;
+}
+
+.products-icon{
+font-size:12px;
+color:#8994a0;
+}
+
+.arrow{
+margin-left:auto;
+color:#929ba5;
+font-size:13px;
+}
+
+.period{
+width:74px;
+height:41px;
+flex:none;
+background:#fff;
+border:1px solid var(--line);
+border-radius:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:4px;
+color:#566474;
+font-size:10px;
+}
+
+.calendar{
+color:#8d98a3;
+font-size:12px;
+}
+
+.balance-card{
+width:100%;
+height:210px;
+margin:0 auto;
+padding:14px 16px 12px;
+position:relative;
+overflow:hidden;
+border-radius:18px;
+color:#fff;
+background:
+radial-gradient(circle at 100% 0%,rgba(34,91,95,.22),transparent 40%),
+linear-gradient(135deg,#182d46 0%,#19334d 58%,#1d3b4b 100%);
+}
+
+.welcome{
+display:flex;
+align-items:center;
+color:#159578;
+font-size:9px;
+margin-bottom:6px;
+white-space:nowrap;
+}
+
+.welcome-dot{
+width:5px;
+height:5px;
+margin:0 5px;
+border-radius:50%;
+background:#159578;
+}
+
+.updated{
+color:#7f8a97;
+}
+
+.title{
+font-size:18px;
+line-height:1;
+font-weight:750;
+letter-spacing:-.3px;
+margin-bottom:9px;
+}
+
+.currencies{
+display:flex;
+flex-wrap:wrap;
+gap:3px;
+margin-bottom:7px;
+}
+
+.currency{
+padding:3px 7px;
+border-radius:10px;
+background:rgba(126,143,161,.18);
+color:#9ea9b4;
+font-size:8px;
+font-weight:700;
+}
+
+.currency.active{
+background:#168d73;
+color:#e7f2ef;
+}
+
+.balance-label{
+color:#84909d;
+font-size:9px;
+margin-bottom:2px;
+}
+
+.balance-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:5px;
+}
+
+.balance{
+display:flex;
+align-items:center;
+white-space:nowrap;
+font-size:23px;
+line-height:1;
+font-weight:750;
+letter-spacing:-.5px;
+}
+
+.currency-symbol{
+color:#7e8b99;
+font-size:10px;
+font-weight:600;
+margin-right:3px;
+}
+
+.eye{
+width:14px;
+height:8px;
+margin-left:5px;
+border:1.5px solid #68798b;
+border-radius:70% 20%;
+transform:rotate(45deg);
+position:relative;
+}
+
+.eye::after{
+content:"";
+position:absolute;
+width:3px;
+height:3px;
+border:1px solid #68798b;
+border-radius:50%;
+top:1px;
+left:4px;
+}
+
+.report{
+height:34px;
+min-width:105px;
+padding:0 8px;
+border-radius:10px;
+background:#168d73;
+color:#e9f4f1;
+font-size:9px;
+font-weight:750;
+}
+
+.card-bottom{
+position:absolute;
+left:16px;
+right:16px;
+bottom:11px;
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+}
+
+.card-stat{
+min-height:30px;
+padding-left:8px;
+border-left:1px solid rgba(255,255,255,.08);
+}
+
+.card-stat:first-child{
+border-left:0;
+padding-left:0;
+}
+
+.card-stat-label{
+color:#7f8c9b;
+font-size:7px;
+margin-bottom:3px;
+letter-spacing:.3px;
+}
+
+.card-stat-value{
+color:#c2ccd6;
+font-size:12px;
+font-weight:700;
+}
+
+.card-stat-value.green{
+color:#159578;
+}
+
+.banner{
+width:100%;
+height:190px;
+margin:9px auto 0;
+position:relative;
+overflow:hidden;
+border-radius:16px;
+background:
+radial-gradient(circle at 18% 55%,#173a48 0,#173a48 22%,transparent 23%),
+radial-gradient(circle at 82% 38%,#162f49 0,#162f49 24%,transparent 25%),
+linear-gradient(135deg,#102d3d,#172f49);
+}
+
+.banner-tag{
+position:absolute;
+z-index:5;
+top:9px;
+left:9px;
+padding:4px 7px;
+border-radius:9px;
+background:rgba(78,88,98,.43);
+border:1px solid rgba(255,255,255,.10);
+color:#d4dbe1;
+font-size:7px;
+letter-spacing:1px;
+font-weight:700;
+}
+
+.fullscreen{
+position:absolute;
+top:8px;
+right:8px;
+z-index:6;
+width:27px;
+height:27px;
+border-radius:50%;
+background:rgba(60,69,78,.48);
+color:#d8dee4;
+font-size:12px;
+}
+
+.referral-label{
+position:absolute;
+top:30px;
+left:50%;
+transform:translateX(-50%);
+z-index:5;
+padding:2px 10px;
+border-radius:8px;
+color:#168d73;
+border:1px solid rgba(22,141,115,.25);
+background:rgba(0,70,65,.12);
+font-size:5px;
+letter-spacing:1.2px;
+}
+
+.people{
+position:absolute;
+top:43px;
+left:50%;
+transform:translateX(-50%);
+z-index:5;
+display:flex;
+gap:4px;
+}
+
+.person{
+width:31px;
+height:31px;
+border-radius:50%;
+border:1.5px solid #168d73;
+background:rgba(10,50,62,.38);
+position:relative;
+}
+
+.person::before{
+content:"";
+position:absolute;
+width:8px;
+height:8px;
+top:5px;
+left:10px;
+border-radius:50%;
+background:#168d73;
+}
+
+.person::after{
+content:"";
+position:absolute;
+width:17px;
+height:6px;
+left:6px;
+bottom:4px;
+border-radius:20px 20px 0 0;
+background:#168d73;
+}
+
+.banner-center{
+position:absolute;
+top:78px;
+left:0;
+right:0;
+z-index:5;
+text-align:center;
+}
+
+.banner-center-title{
+color:#d4dbe1;
+font-size:13px;
+font-weight:750;
+margin-bottom:3px;
+}
+
+.banner-center-text{
+color:#8794a1;
+font-size:8px;
+line-height:1.3;
+}
+
+.video{
+position:absolute;
+z-index:9;
+left:50%;
+top:50%;
+transform:translate(-50%,-50%);
+width:38px;
+height:38px;
+border-radius:50%;
+background:rgba(91,96,101,.53);
+border:1px solid rgba(255,255,255,.27);
+color:#e8ecef;
+font-size:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.slide-arrow{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+z-index:8;
+width:27px;
+height:27px;
+border-radius:50%;
+background:rgba(16,38,59,.52);
+border:1px solid rgba(255,255,255,.08);
+color:#d1d8de;
+font-size:16px;
+}
+
+.slide-left{left:8px;}
+.slide-right{right:8px;}
+
+.banner-bottom{
+position:absolute;
+z-index:7;
+left:12px;
+right:12px;
+bottom:10px;
+}
+
+.banner-title{
+color:#f0f2f4;
+font-size:12px;
+line-height:1.15;
+font-weight:750;
+margin-bottom:3px;
+}
+
+.banner-description{
+color:#b9c2ca;
+font-size:8px;
+line-height:1.3;
+max-width:300px;
+}
+
+.banner-link{
+color:#159578;
+font-size:9px;
+font-weight:750;
+margin-top:3px;
+}
+
+.dots{
+position:absolute;
+right:10px;
+bottom:8px;
+z-index:10;
+display:flex;
+gap:3px;
+}
+
+.dots span{
+width:17px;
+height:2px;
+border-radius:8px;
+background:#59636d;
+}
+
+.dots span.active{
+width:22px;
+background:#159578;
+}
+
+.stats{
+width:100%;
+height:120px;
+margin:9px auto 0;
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+background:#fff;
+border:1px solid var(--line);
+border-radius:14px;
+overflow:hidden;
+}
+
+.stat{
+padding:10px 8px;
+border-right:1px solid var(--line);
+}
+
+.stat:last-child{
+border-right:0;
+}
+
+.stat-icon{
+width:32px;
+height:32px;
+border-radius:9px;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+margin-bottom:7px;
+}
+
+.stat-icon svg{
+width:20px;
+height:20px;
+fill:none;
+stroke:currentColor;
+stroke-width:1.8;
+stroke-linecap:round;
+stroke-linejoin:round;
+}
+
+.stat-icon.green{
+background:#edf9f5;
+color:#10a884;
+}
+
+.stat-icon.blue{
+background:#f0f5fc;
+color:#4d86cf;
+}
+
+.stat-icon.red{
+background:#fcf1f3;
+color:#d06a7e;
+}
+
+.stat-name{
+color:#969fa8;
+font-size:8px;
+line-height:1.3;
+margin-bottom:6px;
+}
+
+.stat-value{
+color:#26384b;
+font-size:16px;
+font-weight:500;
+}
+
+.ticket{
+width:100%;
+height:220px;
+margin:9px auto 0;
+padding:13px 12px;
+background:#fff;
+border:1px solid var(--line);
+border-radius:14px;
+}
+
+.ticket-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:5px;
+}
+
+.ticket-title{
+font-size:14px;
+font-weight:750;
+}
+
+.ticket-options{
+display:flex;
+align-items:center;
+gap:3px;
+color:#9ca4ac;
+font-size:8px;
+}
+
+.today{
+padding:5px 7px;
+border-radius:7px;
+background:#f7f8f9;
+}
+
+.empty{
+text-align:center;
+color:#a4abb3;
+font-size:9px;
+margin-top:12px;
+}
+
+.ticket-currencies{
+width:100%;
+margin-top:10px;
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.ticket-currency{
+display:flex;
+align-items:center;
+justify-content:space-between;
+min-height:30px;
+}
+
+.ticket-country{
+display:flex;
+align-items:center;
+gap:7px;
+color:#69737d;
+font-size:10px;
+font-weight:600;
+}
+
+.ticket-flag{
+width:22px;
+height:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:13px;
+}
+
+.ticket-money{
+color:#253446;
+font-size:12px;
+font-weight:650;
+text-align:right;
+}
+
+.ticket-money.editable{
+cursor:pointer;
+}
+
+.ticket-money .editable-input{
+width:75px;
+text-align:right;
+}
+
+.chat{
+position:fixed;
+right:11px;
+bottom:11px;
+z-index:50;
+width:49px;
+height:49px;
+border-radius:50%;
+background:#3979c4;
+box-shadow:0 3px 10px rgba(45,84,125,.18);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.chat-icon{
+width:26px;
+height:19px;
+border-radius:5px 5px 7px 7px;
+background:#f5f7f9;
+position:relative;
+}
+
+.chat-icon::after{
+content:"";
+position:absolute;
+left:5px;
+bottom:-5px;
+border-style:solid;
+border-width:5px 5px 0 0;
+border-color:#f5f7f9 transparent transparent transparent;
+}
+
+.editable{
+cursor:pointer;
+transition:opacity .15s ease;
+}
+
+.editable:active{
+opacity:.55;
+}
+
+.editable-input{
+font-family:inherit;
+border:0;
+outline:0;
+background:transparent;
+font-weight:inherit;
+font-size:inherit;
+color:inherit;
+width:75px;
+padding:0;
+margin:0;
+}
+
+.balance .editable-input{
+width:105px;
+}
+
+.card-stat-value .editable-input{
+width:65px;
+}
+
+.stat-value .editable-input{
+width:70px;
+}
+
+#temporaryBannerImage{
+position:absolute;
+left:0;
+top:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:4;
+}
+
+@media(max-width:360px){
+
+.app{
+padding-left:7px;
+padding-right:7px;
+}
+
+.balance-card{
+height:200px;
+padding:13px 14px 11px;
+}
+
+.banner{
+height:180px;
+}
+
+.stats{
+height:115px;
+}
+
+.ticket{
+height:220px;
+}
+
+.title{
+font-size:17px;
+}
+
+.balance{
+font-size:22px;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="topbar">
+
+<button class="menu">
+<span class="menu-lines"></span>
+</button>
+
+<div class="avatar">
+AD
+</div>
+
+<div class="products">
+<span class="products-icon">▣</span>
+<span>Todos os produtos</span>
+<span class="arrow">⌄</span>
+</div>
+
+<div class="period">
+<span class="calendar">□</span>
+<span>Período</span>
+<span class="arrow">⌄</span>
+</div>
+
+</header>
+
+<section class="balance-card">
+
+<div class="welcome">
+
+<span
+class="editable"
+data-key="boas_vindas"
+>
+👋 Bem-vindo de volta
+</span>
+
+<span class="welcome-dot"></span>
+
+<span
+class="updated editable"
+data-key="status"
+>
+atualizado agora
+</span>
+
+</div>
+
+<h1
+class="title editable"
+data-key="nome_perfil"
+>
+Olá, Arxiken
+</h1>
+
+<div class="currencies">
+
+<span class="currency active">MZN</span>
+<span class="currency">ZAR</span>
+<span class="currency">BRL</span>
+<span class="currency">USD</span>
+<span class="currency">EUR</span>
+<span class="currency">INR</span>
+<span class="currency">AOA</span>
+
+</div>
+
+<div class="balance-label">
+Saldo disponível para saque
+</div>
+
+<div class="balance-row">
+
+<div class="balance">
+
+<span class="currency-symbol">
+MT
+</span>
+
+<span
+class="editable"
+data-key="saldo"
+>
+0,00
+</span>
+
+<span class="eye"></span>
+
+</div>
+
+<button class="report">
+Ver relatório →
+</button>
+
+</div>
+
+<div class="card-bottom">
+
+<div class="card-stat">
+
+<div class="card-stat-label">
+HOJE
+</div>
+
+<div
+class="card-stat-value editable"
+data-key="hoje"
+>
+0.00
+</div>
+
+</div>
+
+<div class="card-stat">
+
+<div class="card-stat-label">
+ONTEM
+</div>
+
+<div
+class="card-stat-value editable"
+data-key="ontem"
+>
+0.00
+</div>
+
+</div>
+
+<div class="card-stat">
+
+<div class="card-stat-label">
+ESTE MÊS
+</div>
+
+<div
+class="card-stat-value green editable"
+data-key="mes"
+>
+0.00
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="banner">
+
+<div class="banner-tag">
+AFILIADOS · 02 / 02
+</div>
+
+<button class="fullscreen">
+↗
+</button>
+
+<div class="referral-label">
+REFERRAL
+</div>
+
+<div class="people">
+
+<div class="person"></div>
+<div class="person"></div>
+<div class="person"></div>
+
+</div>
+
+<div class="banner-center">
+
+<div class="banner-center-title">
+Convide e fature junto
+</div>
+
+<div class="banner-center-text">
+Ganhe comissão recorrente por cada vendedor<br>
+que você trouxer para a EscalePay.
+</div>
+
+</div>
+
+<button class="slide-arrow slide-left">
+‹
+</button>
+
+<button
+class="video"
+id="videoButton"
+>
+▶
+</button>
+
+<button class="slide-arrow slide-right">
+›
+</button>
+
+<div class="banner-bottom">
+
+<div class="banner-title">
+Indique a EscalePay e fature junto
+</div>
+
+<div class="banner-description">
+Ganhe uma comissão recorrente por cada vendedor
+que você trouxer para a plataforma.
+</div>
+
+<div class="banner-link">
+Gerar link de convite →
+</div>
+
+</div>
+
+<div class="dots">
+<span></span>
+<span class="active"></span>
+</div>
+
+</section>
+
+<section class="stats">
+
+<div class="stat">
+
+<div class="stat-icon green">
+
+<svg viewBox="0 0 24 24" aria-hidden="true">
+
+<path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 7H6"/>
+
+<circle cx="10" cy="19" r="1.5"></circle>
+
+<circle cx="18" cy="19" r="1.5"></circle>
+
+</svg>
+
+</div>
+
+<div class="stat-name">
+Total de Vendas
+</div>
+
+<div
+class="stat-value editable"
+data-key="vendas"
+>
+0
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-icon blue">
+
+<svg viewBox="0 0 24 24" aria-hidden="true">
+
+<polyline points="4,16 9,11 13,14 20,6"></polyline>
+
+<polyline points="15,6 20,6 20,11"></polyline>
+
+</svg>
+
+</div>
+
+<div class="stat-name">
+Taxa de conv.
+</div>
+
+<div
+class="stat-value editable"
+data-key="conversao"
+>
+0.0%
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-icon red">
+
+<svg viewBox="0 0 24 24" aria-hidden="true">
+
+<path d="M3 4h2l2.1 10.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 7H6"/>
+
+<circle cx="10" cy="19" r="1.5"></circle>
+
+<circle cx="18" cy="19" r="1.5"></circle>
+
+<line x1="7" y1="7" x2="19" y2="18"></line>
+
+<line x1="19" y1="7" x2="7" y2="18"></line>
+
+</svg>
+
+</div>
+
+<div class="stat-name">
+Taxa de<br>
+Abandono
+</div>
+
+<div
+class="stat-value editable"
+data-key="abandono"
+>
+0.0%
+</div>
+
+</div>
+
+</section>
+
+<section class="ticket">
+
+<div class="ticket-header">
+
+<div class="ticket-title">
+Ticket médio
+</div>
+
+<div class="ticket-options">
+
+<span>
++7 moedas
+</span>
+
+<span>
+⌄
+</span>
+
+<span class="today">
+Hoje
+</span>
+
+</div>
+
+</div>
+
+<div
+class="empty editable"
+data-key="ticket"
+>
+Sem dados no período
+</div>
+
+<div class="ticket-currencies">
+
+<div class="ticket-currency">
+
+<div class="ticket-country">
+<span class="ticket-flag">🇲🇿</span>
+<span>Moçambique</span>
+<span>MZN</span>
+</div>
+
+<div
+class="ticket-money editable"
+data-key="ticket_mzn"
+>
+MT 0,00
+</div>
+
+</div>
+
+<div class="ticket-currency">
+
+<div class="ticket-country">
+<span class="ticket-flag">🇧🇷</span>
+<span>Brasil</span>
+<span>BRL</span>
+</div>
+
+<div
+class="ticket-money editable"
+data-key="ticket_brl"
+>
+R$ 0,00
+</div>
+
+</div>
+
+<div class="ticket-currency">
+
+<div class="ticket-country">
+<span class="ticket-flag">🇺🇸</span>
+<span>Estados Unidos</span>
+<span>USD</span>
+</div>
+
+<div
+class="ticket-money editable"
+data-key="ticket_usd"
+>
+$ 0,00
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+<button class="chat">
+<span class="chat-icon"></span>
+</button>
+
+<input
+type="file"
+id="videoImageInput"
+accept="image/*"
+style="display:none"
+>
+
+<script>
+
+const editableElements =
+document.querySelectorAll(".editable");
+
+editableElements.forEach(element => {
+
+const key =
+element.dataset.key;
+
+const savedValue =
+localStorage.getItem(
+"escalePay_" + key
+);
+
+if(savedValue !== null){
+
+element.textContent =
+savedValue;
+
+}
+
+element.addEventListener(
+"click",
+function(){
+
+if(
+this.querySelector("input")
+) return;
+
+const oldValue =
+this.textContent.trim();
+
+const input =
+document.createElement("input");
+
+input.type = "text";
+
+input.className =
+"editable-input";
+
+input.value =
+oldValue;
+
+this.textContent = "";
+
+this.appendChild(input);
+
+input.focus();
+input.select();
+
+function save(){
+
+let value =
+input.value.trim();
+
+if(value === ""){
+
+value =
+oldValue;
+
+}
+
+localStorage.setItem(
+"escalePay_" + key,
+value
+);
+
+element.textContent =
+value;
+
+}
+
+input.addEventListener(
+"blur",
+save
+);
+
+input.addEventListener(
+"keydown",
+function(event){
+
+if(event.key === "Enter"){
+
+input.blur();
+
+}
+
+if(event.key === "Escape"){
+
+element.textContent =
+oldValue;
+
+}
+
+}
+);
+
+}
+
+);
+
+});
+
+/* IMAGEM DO BANNER */
+
+const videoButton =
+document.getElementById(
+"videoButton"
+);
+
+const imageInput =
+document.getElementById(
+"videoImageInput"
+);
+
+const banner =
+document.querySelector(
+".banner"
+);
+
+videoButton.addEventListener(
+"click",
+function(){
+
+imageInput.click();
+
+}
+);
+
+imageInput.addEventListener(
+"change",
+function(){
+
+const file =
+this.files[0];
+
+if(!file) return;
+
+if(
+!file.type.startsWith("image/")
+) return;
+
+const imageURL =
+URL.createObjectURL(file);
+
+let image =
+document.getElementById(
+"temporaryBannerImage"
+);
+
+if(!image){
+
+image =
+document.createElement("img");
+
+image.id =
+"temporaryBannerImage";
+
+banner.insertBefore(
+image,
+banner.firstChild
+);
+
+}
+
+image.src =
+imageURL;
+
+}
+);
+
+</script>
+
+</body>
+  </html>
