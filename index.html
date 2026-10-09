@@ -16,6 +16,7 @@
   --bubble-width:83%;
   --bubble-height:0px;
   --message-size:20px;
+  --footer-scale:1;
 }
 
 *{box-sizing:border-box}
@@ -67,7 +68,7 @@ body{display:grid;place-items:center}
   height:48px;
   border:2px solid #353c40;
   border-radius:50%;
-  background:linear-gradient(145deg,#394146,#242a2e);
+  background:#fff;
   display:grid;
   place-items:center;
   color:#d7dcde;
@@ -81,10 +82,7 @@ body{display:grid;place-items:center}
 
 .avatar:active{transform:scale(.94)}
 
-.avatar svg{
-  width:27px;
-  height:27px;
-}
+.avatar svg{display:none}
 
 .avatar img{
   width:100%;
@@ -192,29 +190,29 @@ body{display:grid;place-items:center}
   text-decoration:underline;
 }
 
-.new-message{
-  animation:appear .28s ease-out;
-}
+.new-message{animation:appear .28s ease-out}
 
-.new-message .date{
-  margin:17px 0 10px;
-}
+.new-message .date{margin:17px 0 10px}
 
-/* RODAPÉ */
+/* RODAPÉ: ACOMPANHA O TAMANHO DA MENSAGEM */
 
 .footer{
   flex:none;
   background:#1b2023;
   border-radius:35px 35px 0 0;
-  padding:21px 25px calc(20px + env(safe-area-inset-bottom));
-  font-size:19px;
-  line-height:1.55;
+  padding:
+    calc(21px * var(--footer-scale))
+    calc(25px * var(--footer-scale))
+    calc((20px * var(--footer-scale)) + env(safe-area-inset-bottom));
+  font-size:calc(var(--message-size) * .95);
+  line-height:1.45;
   color:#e3e6e7;
   overflow-wrap:anywhere;
+  transition:padding .15s ease,font-size .15s ease;
 }
 
 .footer-text{
-  min-height:25px;
+  min-height:0;
   outline:none;
   white-space:pre-wrap;
   overflow-wrap:anywhere;
@@ -225,12 +223,13 @@ body{display:grid;place-items:center}
   outline-offset:4px;
 }
 
-/* SAIBA MAIS EDITÁVEL */
+/* SAIBA MAIS */
 
 .learn-more-wrap{
   display:flex;
   width:100%;
   margin-top:0;
+  min-height:0;
 }
 
 #learn-more{
@@ -238,18 +237,21 @@ body{display:grid;place-items:center}
   max-width:100%;
   overflow-wrap:anywhere;
   cursor:pointer;
-  color:#e3e6e7;
+  color:var(--blue);
   text-decoration:underline;
   outline:none;
 }
 
-#learn-more.is-blue{
-  color:var(--blue);
-}
+#learn-more.is-blue{color:var(--blue)}
 
 #learn-more:focus-visible{
   outline:1px dashed #79c9ef;
   outline-offset:4px;
+}
+
+#learn-more[hidden],
+.learn-more-wrap:has(#learn-more[hidden]){
+  display:none;
 }
 
 .gesture{
@@ -520,7 +522,6 @@ body{display:grid;place-items:center}
 <main class="phone" aria-label="Conversa personalizável">
 
   <header class="topbar">
-
     <span class="back" aria-hidden="true">‹</span>
 
     <button
@@ -541,7 +542,6 @@ body{display:grid;place-items:center}
     <div class="contact" id="contact-name">M-Pesa</div>
 
     <button class="more" id="more" aria-label="Mais opções">⋮</button>
-
   </header>
 
   <section class="chat" id="chat" aria-label="Mensagens">
@@ -577,10 +577,9 @@ M-Pesa. Em caso de dúvida, liga
     <div class="carrier">A enviar com <a>Vodacom</a></div>
 
     <div id="new-messages"></div>
-
   </section>
 
-  <footer class="footer">
+  <footer class="footer" id="footer">
 
     <div
       class="footer-text"
@@ -592,11 +591,7 @@ M-Pesa. Em caso de dúvida, liga
 Contacte-o diretamente.</div>
 
     <div class="learn-more-wrap" id="learn-more-wrap">
-      <a
-        id="learn-more"
-        role="link"
-        tabindex="0"
-      >Saiba mais</a>
+      <a id="learn-more" role="link" tabindex="0">Saiba mais</a>
     </div>
 
   </footer>
@@ -604,22 +599,16 @@ Contacte-o diretamente.</div>
   <div class="gesture"></div>
 
   <div class="menu" id="menu" hidden>
-
     <button id="add">
       ＋ &nbsp; Adicionar mensagem
       <span class="menu-count" id="pending-count"></span>
     </button>
 
     <button id="change-photo">▧ &nbsp; Foto de perfil</button>
-
     <button id="appearance">⚙ &nbsp; Personalizar aparência</button>
-
     <button id="edit-footer">✎ &nbsp; Editar texto inferior</button>
-
     <button id="edit-learn-more">✎ &nbsp; Editar Saiba mais</button>
-
     <button id="exit">Sair do menu</button>
-
   </div>
 
   <!-- ADICIONAR MENSAGEM -->
@@ -632,7 +621,8 @@ Contacte-o diretamente.</div>
 
       <p>
         Guarda mensagens para as mostrar na conversa ao tocar na foto
-        do perfil.
+        do perfil. A data e a hora apresentadas serão atualizadas
+        automaticamente quando a mensagem aparecer.
       </p>
 
       <div class="editor" id="message-editor"
@@ -652,7 +642,6 @@ Contacte-o diretamente.</div>
         <button id="cancel-message">Cancelar</button>
         <button class="save" id="save-message">Guardar mensagem</button>
       </div>
-
     </section>
   </div>
 
@@ -665,8 +654,8 @@ Contacte-o diretamente.</div>
       <h2 id="settings-title">Personalizar aparência</h2>
 
       <p>
-        Altera o nome e o tamanho das mensagens. As definições ficam
-        guardadas neste navegador.
+        Altera o nome e o tamanho das mensagens. O rodapé também
+        acompanha o tamanho das palavras.
       </p>
 
       <label class="field-label" for="sender-name">
@@ -699,11 +688,8 @@ Contacte-o diretamente.</div>
 
       <div class="dialog-actions">
         <button id="cancel-settings">Cancelar</button>
-        <button class="save" id="save-settings">
-          Guardar definições
-        </button>
+        <button class="save" id="save-settings">Guardar definições</button>
       </div>
-
     </section>
   </div>
 
@@ -715,10 +701,7 @@ Contacte-o diretamente.</div>
 
       <h2 id="footer-title">Editar texto inferior</h2>
 
-      <p>
-        Escreve o texto que pretendes apresentar. O botão
-        “Saiba mais” continuará visível.
-      </p>
+      <p>Escreve o texto que pretendes apresentar.</p>
 
       <div class="editor" id="footer-editor"
            contenteditable="true"
@@ -731,11 +714,10 @@ Contacte-o diretamente.</div>
         <button id="cancel-footer">Cancelar</button>
         <button class="save" id="save-footer">Guardar texto</button>
       </div>
-
     </section>
   </div>
 
-  <!-- EDITAR TEXTO, COR E POSIÇÃO DE SAIBA MAIS -->
+  <!-- EDITAR OU ELIMINAR SAIBA MAIS -->
 
   <div class="modal" id="learn-modal" hidden>
     <section class="dialog" role="dialog" aria-modal="true"
@@ -744,14 +726,11 @@ Contacte-o diretamente.</div>
       <h2 id="learn-title">Editar texto e posição</h2>
 
       <p>
-        Escreve qualquer texto, apaga o conteúdo ou escolhe onde
-        pretendes posicioná-lo. O texto ficará azul automaticamente
-        quando escreveres “Saiba mais”.
+        Podes alterar o texto, mudar a posição ou eliminar
+        completamente o botão. Quando estiver visível, ficará azul.
       </p>
 
-      <label class="field-label" for="learn-editor">
-        Texto do botão
-      </label>
+      <label class="field-label" for="learn-editor">Texto do botão</label>
 
       <input
         class="text-field"
@@ -764,29 +743,20 @@ Contacte-o diretamente.</div>
       <div class="field-label">Posição do texto</div>
 
       <div class="alignment-options">
-        <button type="button" data-align="left" id="align-left">
-          Esquerda
-        </button>
-        <button type="button" data-align="center" id="align-center">
-          Centro
-        </button>
-        <button type="button" data-align="right" id="align-right">
-          Direita
-        </button>
+        <button type="button" data-align="left" id="align-left">Esquerda</button>
+        <button type="button" data-align="center" id="align-center">Centro</button>
+        <button type="button" data-align="right" id="align-right">Direita</button>
       </div>
 
       <div class="preview-label">Pré-visualização</div>
 
-      <div class="learn-preview" id="learn-preview">
-        Saiba mais
-      </div>
+      <div class="learn-preview" id="learn-preview">Saiba mais</div>
 
       <div class="dialog-actions">
-        <button id="clear-learn">Apagar texto</button>
+        <button id="clear-learn">Eliminar texto</button>
         <button id="cancel-learn">Cancelar</button>
         <button class="save" id="save-learn">Guardar alterações</button>
       </div>
-
     </section>
   </div>
 
@@ -855,6 +825,8 @@ function escapeHtml(value){
   })[char]);
 }
 
+/* PERMITE APENAS FORMATAÇÃO SIMPLES */
+
 function safeHtml(value){
   const parsed = new DOMParser().parseFromString(
     String(value || ''),
@@ -865,29 +837,19 @@ function safeHtml(value){
     let output = '';
 
     for(const child of node.childNodes){
-
       if(child.nodeType === Node.TEXT_NODE){
         output += escapeHtml(child.nodeValue);
-      }
-
-      else if(child.nodeType === Node.ELEMENT_NODE){
-
+      }else if(child.nodeType === Node.ELEMENT_NODE){
         const tag = child.tagName.toLowerCase();
         const inner = clean(child);
 
         if(tag === 'br'){
           output += '<br>';
-        }
-
-        else if(['u','b','strong','i','em'].includes(tag)){
+        }else if(['u','b','strong','i','em'].includes(tag)){
           output += '<' + tag + '>' + inner + '</' + tag + '>';
-        }
-
-        else if(tag === 'div' || tag === 'p'){
+        }else if(tag === 'div' || tag === 'p'){
           output += inner + '<br>';
-        }
-
-        else{
+        }else{
           output += inner;
         }
       }
@@ -911,9 +873,11 @@ function updatePendingCount(){
 function applySettings(){
   $('contact-name').textContent = settings.name || 'M-Pesa';
 
+  const font = Number(settings.font) || 20;
+
   document.documentElement.style.setProperty(
     '--message-size',
-    (Number(settings.font) || 20) + 'px'
+    font + 'px'
   );
 
   document.documentElement.style.setProperty(
@@ -925,6 +889,105 @@ function applySettings(){
     '--bubble-height',
     (Number(settings.height) || 0) + 'px'
   );
+
+  /*
+    O rodapé acompanha o tamanho escolhido para as mensagens.
+    A escala afeta o espaçamento, enquanto a fonte usa a
+    mesma referência de tamanho.
+  */
+  const scale = font / 20;
+
+  document.documentElement.style.setProperty(
+    '--footer-scale',
+    String(scale)
+  );
+}
+
+/* FORMATA DATA E HORA DO MOMENTO EM QUE A MENSAGEM É APRESENTADA */
+
+function formatCurrentDateTime(timestamp){
+  const dateValue = new Date(timestamp);
+
+  const date = dateValue.toLocaleDateString('pt-MZ',{
+    weekday:'long',
+    day:'numeric',
+    month:'short'
+  });
+
+  const time = dateValue.toLocaleTimeString('pt-MZ',{
+    hour:'2-digit',
+    minute:'2-digit',
+    hour12:false
+  });
+
+  return date + ' · ' + time;
+}
+
+/*
+  Atualiza as referências de data e hora dentro do texto escrito.
+  Isto permite corrigir horas introduzidas manualmente nos formatos
+  mais comuns, sem modificar números de telefone, códigos ou valores.
+*/
+
+function updateMessageDateTime(html, timestamp){
+  const current = new Date(timestamp);
+
+  const dateDMY = [
+    String(current.getDate()).padStart(2,'0'),
+    String(current.getMonth()+1).padStart(2,'0'),
+    String(current.getFullYear()).slice(-2)
+  ].join('/');
+
+  const dateDMY4 = [
+    String(current.getDate()).padStart(2,'0'),
+    String(current.getMonth()+1).padStart(2,'0'),
+    current.getFullYear()
+  ].join('/');
+
+  const time24 = current.toLocaleTimeString('pt-MZ',{
+    hour:'2-digit',
+    minute:'2-digit',
+    hour12:false
+  });
+
+  const time12 = current.toLocaleTimeString('en-US',{
+    hour:'numeric',
+    minute:'2-digit',
+    hour12:true
+  });
+
+  const replacements = [
+    {
+      pattern:/\b\d{1,2}\/\d{1,2}\/\d{2,4}\s+(?:às\s+)?\d{1,2}:\d{2}\s*(?:AM|PM)\b/gi,
+      value:dateDMY4 + ' às ' + time12
+    },
+    {
+      pattern:/\b\d{1,2}\/\d{1,2}\/\d{2,4}\s+(?:às\s+)?\d{1,2}:\d{2}\b/gi,
+      value:dateDMY4 + ' às ' + time24
+    },
+    {
+      pattern:/\b\d{1,2}:\d{2}\s*(?:AM|PM)\b/gi,
+      value:time12
+    },
+    {
+      pattern:/\b\d{1,2}:\d{2}\b/g,
+      value:time24
+    }
+  ];
+
+  let result = String(html || '');
+
+  /*
+    Corrige texto visível dentro das mensagens.
+    A substituição é intencionalmente limitada a formatos de hora
+    e data; códigos, telefones e montantes não são recalculados.
+  */
+
+  replacements.forEach(item=>{
+    result = result.replace(item.pattern, item.value);
+  });
+
+  return result;
 }
 
 /* MOSTRAR MENSAGENS EM SEQUÊNCIA */
@@ -934,7 +997,6 @@ function renderHistory(){
   destination.replaceChildren();
 
   history.forEach((message, index)=>{
-
     const wrap = document.createElement('div');
     wrap.className = 'new-message';
 
@@ -950,23 +1012,9 @@ function renderHistory(){
     }
 
     if(message.receivedAt){
-      const dateValue = new Date(message.receivedAt);
-
       const date = document.createElement('div');
       date.className = 'date';
-
-      date.textContent =
-        dateValue.toLocaleDateString('pt-MZ',{
-          weekday:'long',
-          day:'numeric',
-          month:'short'
-        }) + ' · ' +
-        dateValue.toLocaleTimeString('pt-MZ',{
-          hour:'2-digit',
-          minute:'2-digit',
-          hour12:false
-        });
-
+      date.textContent = formatCurrentDateTime(message.receivedAt);
       wrap.append(date);
     }
 
@@ -978,10 +1026,9 @@ function renderHistory(){
 
     const carrier = document.createElement('div');
     carrier.className = 'carrier';
-    carrier.innerHTML = 'A enviar com <a>Vodacom</a>';
+    carrier.textContent = 'A enviar com Vodacom';
 
     wrap.append(carrier);
-
     destination.append(wrap);
   });
 }
@@ -998,17 +1045,14 @@ function loadProfilePhoto(){
   if(savedPhoto){
     $('profile-image').src = savedPhoto;
     $('profile-image').hidden = false;
-    $('default-avatar').hidden = true;
   }else{
     $('profile-image').removeAttribute('src');
     $('profile-image').hidden = true;
-    $('default-avatar').hidden = false;
   }
 }
 
 function openPhotoPicker(){
   const input = $('photo-input');
-
   input.value = '';
   input.click();
 }
@@ -1038,7 +1082,6 @@ $('photo-input').addEventListener('change', event=>{
 
       $('profile-image').src = reader.result;
       $('profile-image').hidden = false;
-      $('default-avatar').hidden = true;
 
       notify('Foto de perfil guardada.');
     }catch{
@@ -1051,14 +1094,12 @@ $('photo-input').addEventListener('change', event=>{
   };
 
   reader.readAsDataURL(file);
-
   event.target.value = '';
 });
 
 /*
-  Ao abrir a opção Foto de perfil:
-  - Sem fotografia: abre a galeria.
-  - Com fotografia guardada: abre a funcionalidade de adicionar mensagem.
+  O botão Foto de perfil abre a galeria quando ainda não há imagem.
+  Se já houver fotografia, abre a área de adicionar mensagem.
 */
 
 $('change-photo').addEventListener('click', ()=>{
@@ -1191,22 +1232,17 @@ $('save-settings').addEventListener('click', ()=>{
     height:Number($('bubble-height').value)
   };
 
-  localStorage.setItem(
-    STORE_SETTINGS,
-    JSON.stringify(settings)
-  );
+  localStorage.setItem(STORE_SETTINGS, JSON.stringify(settings));
 
   applySettings();
 
   $('settings-modal').hidden = true;
-
   notify('Definições guardadas.');
 });
 
 /* TEXTO INFERIOR EDITÁVEL */
 
 const footerText = $('footer-text');
-
 const savedFooter = localStorage.getItem(STORE_FOOTER);
 
 if(savedFooter !== null){
@@ -1217,7 +1253,6 @@ function saveFooterText(value){
   const clean = safeHtml(value);
 
   footerText.innerHTML = clean;
-
   localStorage.setItem(STORE_FOOTER, clean);
 }
 
@@ -1225,7 +1260,6 @@ $('save-footer').addEventListener('click', ()=>{
   saveFooterText($('footer-editor').innerHTML);
 
   $('footer-modal').hidden = true;
-
   notify('Texto inferior guardado.');
 });
 
@@ -1238,8 +1272,6 @@ $('cancel-footer').addEventListener('click', ()=>{
   $('footer-modal').hidden = true;
 });
 
-/* PERMITIR EDIÇÃO DIRETA DO TEXTO */
-
 footerText.addEventListener('input', ()=>{
   localStorage.setItem(
     STORE_FOOTER,
@@ -1247,7 +1279,7 @@ footerText.addEventListener('input', ()=>{
   );
 });
 
-/* EDITAR TEXTO E POSIÇÃO DE SAIBA MAIS */
+/* EDITAR TEXTO, POSIÇÃO E VISIBILIDADE DE SAIBA MAIS */
 
 const learnMore = $('learn-more');
 const learnWrap = $('learn-more-wrap');
@@ -1260,17 +1292,14 @@ if(learnText === null){
 
 let learnAlign = localStorage.getItem(STORE_LEARN_ALIGN) || 'left';
 
-function isSaibaMais(value){
-  return String(value).trim().toLocaleLowerCase('pt') === 'saiba mais';
-}
-
 function applyLearnMore(){
   learnMore.textContent = learnText;
 
-  learnMore.classList.toggle(
-    'is-blue',
-    isSaibaMais(learnText)
-  );
+  /* Quando existe texto, o link permanece azul. */
+  learnMore.classList.add('is-blue');
+
+  /* Texto vazio elimina visualmente o botão. */
+  learnMore.hidden = !String(learnText).trim();
 
   learnWrap.style.justifyContent = learnAlign;
 
@@ -1281,13 +1310,10 @@ function applyLearnMore(){
 function updateLearnPreview(){
   const value = $('learn-editor').value;
 
-  $('learn-preview').textContent = value;
-
+  $('learn-preview').textContent = value || '(sem texto)';
   $('learn-preview').style.textAlign = learnAlign;
-
-  $('learn-preview').style.color = isSaibaMais(value)
-    ? 'var(--blue)'
-    : '#e3e6e7';
+  $('learn-preview').style.color = 'var(--blue)';
+  $('learn-preview').style.textDecoration = value ? 'underline' : 'none';
 }
 
 function updateAlignmentButtons(){
@@ -1328,26 +1354,29 @@ $('clear-learn').addEventListener('click', ()=>{
 
 $('cancel-learn').addEventListener('click', ()=>{
   $('learn-modal').hidden = true;
-
   learnAlign = localStorage.getItem(STORE_LEARN_ALIGN) || 'left';
 });
 
 $('save-learn').addEventListener('click', ()=>{
   learnText = $('learn-editor').value;
-  learnAlign = learnAlign || 'left';
-
   applyLearnMore();
 
   $('learn-modal').hidden = true;
 
-  notify('Texto e posição guardados.');
+  notify(
+    learnText.trim()
+      ? 'Texto e posição guardados.'
+      : 'Texto eliminado.'
+  );
 });
 
 /* CLICAR NO TEXTO SAIBA MAIS */
 
-learnMore.addEventListener('click', ()=>{
-  if(isSaibaMais(learnText)){
-    notify('Saiba mais');
+learnMore.addEventListener('click', event=>{
+  event.preventDefault();
+
+  if(!learnMore.hidden){
+    notify(learnText);
   }
 });
 
@@ -1355,8 +1384,8 @@ learnMore.addEventListener('keydown', event=>{
   if(event.key === 'Enter' || event.key === ' '){
     event.preventDefault();
 
-    if(isSaibaMais(learnText)){
-      notify('Saiba mais');
+    if(!learnMore.hidden){
+      notify(learnText);
     }
   }
 });
@@ -1371,14 +1400,30 @@ $('avatar').addEventListener('click', ()=>{
 
   const message = pending.shift();
 
-  message.receivedAt = new Date().toISOString();
+  /*
+    Regista o instante em que o utilizador toca no perfil.
+    A data/hora do cabeçalho da mensagem usa esse instante.
+  */
+  const now = new Date();
+  message.receivedAt = now.toISOString();
+
+  /*
+    Corrige referências de data/hora comuns que tenham sido escritas
+    manualmente no corpo da mensagem. Não altera montantes nem
+    códigos/telefones que não estejam no formato de data/hora.
+  */
+  message.html = updateMessageDateTime(message.html, now);
 
   history.push(message);
 
   persist();
   updatePendingCount();
 
-  $('initial-unread').remove();
+  const initialUnread = $('initial-unread');
+
+  if(initialUnread){
+    initialUnread.remove();
+  }
 
   renderHistory();
 
@@ -1387,7 +1432,7 @@ $('avatar').addEventListener('click', ()=>{
     behavior:'smooth'
   });
 
-  notify('Nova mensagem apresentada.');
+  notify('Mensagem apresentada com a data e a hora atualizadas.');
 });
 
 /* FECHAR JANELAS */
@@ -1422,4 +1467,4 @@ applyLearnMore();
 </script>
 
 </body>
-</html>
+  </html>
