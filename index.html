@@ -1,11 +1,10 @@
 <!doctype html>
+
 <html lang="pt">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Conversa M-Pesa — personalizável</title>
-
-<style>
+<title>Conversa M-Pesa — personalizável</title><style>
 :root{
   color-scheme:dark;
   --bg:#101416;
@@ -81,7 +80,6 @@ body{display:grid;place-items:center}
 }
 
 .avatar:active{transform:scale(.94)}
-
 .avatar svg{display:none}
 
 .avatar img{
@@ -94,6 +92,7 @@ body{display:grid;place-items:center}
 .contact{
   font-size:21px;
   flex:1;
+  min-width:0;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
@@ -146,7 +145,7 @@ body{display:grid;place-items:center}
 }
 
 .unread{
-  height:27px;
+  min-height:27px;
   display:flex;
   align-items:center;
   gap:4px;
@@ -191,10 +190,9 @@ body{display:grid;place-items:center}
 }
 
 .new-message{animation:appear .28s ease-out}
-
 .new-message .date{margin:17px 0 10px}
 
-/* RODAPÉ: ACOMPANHA O TAMANHO DA MENSAGEM */
+/* RODAPÉ */
 
 .footer{
   flex:none;
@@ -211,11 +209,21 @@ body{display:grid;place-items:center}
   transition:padding .15s ease,font-size .15s ease;
 }
 
+.footer-content{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  width:100%;
+  min-width:0;
+}
+
 .footer-text{
   min-height:0;
+  width:100%;
   outline:none;
   white-space:pre-wrap;
   overflow-wrap:anywhere;
+  word-break:normal;
 }
 
 .footer-text:focus{
@@ -223,26 +231,29 @@ body{display:grid;place-items:center}
   outline-offset:4px;
 }
 
-/* SAIBA MAIS */
+/* SAIBA MAIS E TEXTO COMPLEMENTAR */
 
 .learn-more-wrap{
   display:flex;
   width:100%;
-  margin-top:0;
   min-height:0;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:8px;
+  flex-wrap:wrap;
 }
 
 #learn-more{
   display:inline-block;
   max-width:100%;
   overflow-wrap:anywhere;
+  word-break:normal;
   cursor:pointer;
   color:var(--blue);
   text-decoration:underline;
   outline:none;
+  white-space:normal;
 }
-
-#learn-more.is-blue{color:var(--blue)}
 
 #learn-more:focus-visible{
   outline:1px dashed #79c9ef;
@@ -253,6 +264,19 @@ body{display:grid;place-items:center}
 .learn-more-wrap:has(#learn-more[hidden]){
   display:none;
 }
+
+.footer-extra{
+  display:block;
+  width:100%;
+  max-width:100%;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.45;
+  color:#e3e6e7;
+}
+
+.footer-extra:empty{display:none}
 
 .gesture{
   height:4px;
@@ -269,7 +293,9 @@ body{display:grid;place-items:center}
   position:absolute;
   right:8px;
   top:58px;
-  width:248px;
+  width:min(280px,calc(100% - 16px));
+  max-height:calc(100% - 76px);
+  overflow:auto;
   background:#292f32;
   border-radius:9px;
   box-shadow:0 8px 24px #0008;
@@ -335,7 +361,7 @@ body{display:grid;place-items:center}
   margin:0 0 17px;
   color:#b7bec1;
   font-size:14px;
-  line-height:1.4;
+  line-height:1.5;
 }
 
 .editor{
@@ -348,10 +374,11 @@ body{display:grid;place-items:center}
   border:1px solid #596368;
   border-radius:9px;
   padding:12px;
-  font:16px/1.45 Arial,sans-serif;
+  font:16px/1.5 Arial,sans-serif;
   outline:none;
   white-space:pre-wrap;
   overflow-wrap:anywhere;
+  word-break:normal;
 }
 
 .editor:focus{border-color:#79c9ef}
@@ -366,6 +393,7 @@ body{display:grid;place-items:center}
   align-items:center;
   gap:7px;
   margin:8px 0 0;
+  flex-wrap:wrap;
 }
 
 .toolbar button{
@@ -414,6 +442,7 @@ body{display:grid;place-items:center}
 
 .text-field{
   width:100%;
+  min-width:0;
   background:#171c1e;
   color:#f0f2f3;
   border:1px solid #596368;
@@ -422,6 +451,8 @@ body{display:grid;place-items:center}
   font-size:16px;
   outline:none;
 }
+
+.text-field:focus{border-color:#79c9ef}
 
 .setting-row{
   display:grid;
@@ -449,7 +480,7 @@ body{display:grid;place-items:center}
 
 .alignment-options{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:8px;
   margin-top:12px;
 }
@@ -483,6 +514,48 @@ body{display:grid;place-items:center}
   border-radius:9px;
   padding:12px;
   overflow-wrap:anywhere;
+  white-space:pre-wrap;
+  line-height:1.5;
+}
+
+.photo-preview{
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  overflow:hidden;
+  margin:0 auto 15px;
+  background:#171c1e;
+  border:2px solid #596368;
+  display:grid;
+  place-items:center;
+}
+
+.photo-preview img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.photo-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:12px;
+}
+
+.photo-actions button{
+  padding:12px 8px;
+  border-radius:9px;
+  border:1px solid #50595e;
+  background:#343c40;
+  color:#eef1f2;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.photo-actions button.primary{
+  background:#234558;
+  border-color:#426c80;
 }
 
 .toast{
@@ -508,51 +581,48 @@ body{display:grid;place-items:center}
   to{opacity:1;transform:none}
 }
 
+@media(max-width:360px){
+  .topbar{gap:10px;padding-inline:11px}
+  .contact{font-size:19px}
+  .footer{padding-left:19px;padding-right:19px}
+  .dialog{padding:18px}
+  .dialog-actions{gap:4px}
+}
+
 @media(min-width:461px){
   .phone{
     border-radius:14px;
     height:min(900px,96dvh);
   }
 }
-</style>
-</head>
+</style></head><body><main class="phone" aria-label="Conversa personalizável">  <header class="topbar">
+    <span class="back" aria-hidden="true">‹</span><button
+  class="avatar"
+  id="avatar"
+  aria-label="Abrir perfil e mostrar próxima mensagem"
+  title="Tocar para mostrar mensagem guardada"
+>
+  <svg id="default-avatar" viewBox="0 0 24 24"
+       fill="currentColor" aria-hidden="true">
+    <path d="M12 2.7a9.3 9.3 0 1 0 0 18.6 9.3 9.3 0 0 0 0-18.6Zm0 3.4a3.35 3.35 0 1 1 0 6.7 3.35 3.35 0 0 1 0-6.7Zm0 13a7.05 7.05 0 0 1-5.62-2.8c.12-1.86 3.75-2.88 5.62-2.88s5.5 1.02 5.62 2.88A7.05 7.05 0 0 1 12 19.1Z"/>
+  </svg>
+  <img id="profile-image" alt="Foto de perfil" hidden>
+</button>
 
-<body>
+<input type="file" id="photo-input" accept="image/*" hidden>
 
-<main class="phone" aria-label="Conversa personalizável">
+<div class="contact" id="contact-name">M-Pesa</div>
 
-  <header class="topbar">
-    <span class="back" aria-hidden="true">‹</span>
+<button class="more" id="more" aria-label="Mais opções">⋮</button>
 
-    <button
-      class="avatar"
-      id="avatar"
-      aria-label="Abrir perfil e mostrar próxima mensagem"
-      title="Tocar para mostrar mensagem guardada"
-    >
-      <svg id="default-avatar" viewBox="0 0 24 24"
-           fill="currentColor" aria-hidden="true">
-        <path d="M12 2.7a9.3 9.3 0 1 0 0 18.6 9.3 9.3 0 0 0 0-18.6Zm0 3.4a3.35 3.35 0 1 1 0 6.7 3.35 3.35 0 0 1 0-6.7Zm0 13a7.05 7.05 0 0 1-5.62-2.8c.12-1.86 3.75-2.88 5.62-2.88s5.5 1.02 5.62 2.88A7.05 7.05 0 0 1 12 19.1Z"/>
-      </svg>
-      <img id="profile-image" alt="Foto de perfil" hidden>
-    </button>
+  </header>  <section class="chat" id="chat" aria-label="Mensagens"><div class="unread" id="initial-unread">
+  <span>Não lidas</span>
+</div>
 
-    <input type="file" id="photo-input" accept="image/*" hidden>
+<div class="date">quarta-feira · 09:28</div>
 
-    <div class="contact" id="contact-name">M-Pesa</div>
+<div class="bubble">Confirmado DJ76LUOLRIU.
 
-    <button class="more" id="more" aria-label="Mais opções">⋮</button>
-  </header>
-
-  <section class="chat" id="chat" aria-label="Mensagens">
-
-    <div class="unread" id="initial-unread">
-      <span>Não lidas</span>
-    </div>
-
-    <div class="date">quarta-feira · 09:28</div>
-
-    <div class="bubble">Confirmado DJ76LUOLRIU.
 Recebeste 350.00MT de
 <a>258845646041</a> - GLORIA aos
 <a>7/10/26 às 9:27 AM</a>. O teu novo
@@ -560,11 +630,12 @@ saldo M-Pesa é de 606.00MT. Em
 caso de dúvida, liga 100. M-Pesa é
 fácil!</div>
 
-    <div class="center-date">Ontem · 19:21</div>
+<div class="center-date">Ontem · 19:21</div>
 
-    <div class="carrier">A enviar com <a>Vodacom</a></div>
+<div class="carrier">A enviar com <a>Vodacom</a></div>
 
-    <div class="bubble">Confirmado DJ88LVF9K34.
+<div class="bubble">Confirmado DJ88LVF9K34.
+
 Transferiste 50.00MT e a taxa foi
 de 0.00MT para <a>858027816</a> -
 ALBERTINA aos <a>8/10/26 às 7:23 PM</a>.
@@ -574,197 +645,270 @@ SEM TAXAS de M-Pesa para
 M-Pesa. Em caso de dúvida, liga
 100.</div>
 
-    <div class="carrier">A enviar com <a>Vodacom</a></div>
+<div class="carrier">A enviar com <a>Vodacom</a></div>
 
-    <div id="new-messages"></div>
-  </section>
+<div id="new-messages"></div>
 
-  <footer class="footer" id="footer">
+  </section>  <footer class="footer" id="footer">
+    <div class="footer-content">  <div
+    class="footer-text"
+    id="footer-text"
+    contenteditable="true"
+    spellcheck="false"
+    aria-label="Texto editável do rodapé"
+  >O remetente não pode aceitar respostas.
 
-    <div
-      class="footer-text"
-      id="footer-text"
-      contenteditable="true"
-      spellcheck="false"
-      aria-label="Texto editável do rodapé"
-    >O remetente não pode aceitar respostas.
 Contacte-o diretamente.</div>
 
-    <div class="learn-more-wrap" id="learn-more-wrap">
-      <a id="learn-more" role="link" tabindex="0">Saiba mais</a>
-    </div>
+  <div class="learn-more-wrap" id="learn-more-wrap">
+    <a id="learn-more" role="link" tabindex="0">Saiba mais</a>
+  </div>
 
-  </footer>
+  <div
+    class="footer-extra"
+    id="footer-extra"
+    contenteditable="true"
+    spellcheck="false"
+    aria-label="Texto complementar editável"
+  ></div>
 
-  <div class="gesture"></div>
+</div>
 
-  <div class="menu" id="menu" hidden>
+  </footer>  <div class="gesture"></div>  <div class="menu" id="menu" hidden>
     <button id="add">
       ＋ &nbsp; Adicionar mensagem
       <span class="menu-count" id="pending-count"></span>
+    </button><button id="change-photo">▧ &nbsp; Adicionar foto da galeria</button>
+<button id="remove-photo">× &nbsp; Remover foto de perfil</button>
+<button id="appearance">⚙ &nbsp; Personalizar aparência</button>
+<button id="edit-page">✎ &nbsp; Editar textos da página</button>
+<button id="edit-footer">✎ &nbsp; Editar texto inferior</button>
+<button id="edit-learn-more">✎ &nbsp; Editar Saiba mais</button>
+<button id="exit">Sair do menu</button>
+
+  </div>  <!-- ADICIONAR MENSAGEM -->  <div class="modal" id="message-modal" hidden>
+    <section class="dialog" role="dialog" aria-modal="true"
+             aria-labelledby="message-title">  <h2 id="message-title">Adicionar mensagem</h2>
+
+  <p>
+    Guarda mensagens para as mostrar na conversa ao tocar na foto
+    do perfil. A data e a hora apresentadas serão atualizadas
+    automaticamente quando a mensagem aparecer.
+  </p>
+
+  <div class="editor" id="message-editor"
+       contenteditable="true"
+       role="textbox"
+       aria-multiline="true"
+       data-placeholder="Escreve aqui a mensagem…"></div>
+
+  <div class="toolbar">
+    <button type="button" id="underline" title="Sublinhar texto">
+      <u>U</u>
     </button>
-
-    <button id="change-photo">▧ &nbsp; Foto de perfil</button>
-    <button id="appearance">⚙ &nbsp; Personalizar aparência</button>
-    <button id="edit-footer">✎ &nbsp; Editar texto inferior</button>
-    <button id="edit-learn-more">✎ &nbsp; Editar Saiba mais</button>
-    <button id="exit">Sair do menu</button>
+    <span>Seleciona um trecho e toca em U para o sublinhar.</span>
   </div>
 
-  <!-- ADICIONAR MENSAGEM -->
+  <div class="dialog-actions">
+    <button id="cancel-message">Cancelar</button>
+    <button class="save" id="save-message">Guardar mensagem</button>
+  </div>
+</section>
 
-  <div class="modal" id="message-modal" hidden>
+  </div>  <!-- PERSONALIZAR APARÊNCIA -->  <div class="modal" id="settings-modal" hidden>
     <section class="dialog" role="dialog" aria-modal="true"
-             aria-labelledby="message-title">
+             aria-labelledby="settings-title">  <h2 id="settings-title">Personalizar aparência</h2>
 
-      <h2 id="message-title">Adicionar mensagem</h2>
+  <p>
+    Altera o nome e o tamanho das mensagens. O rodapé também
+    acompanha o tamanho das palavras.
+  </p>
 
-      <p>
-        Guarda mensagens para as mostrar na conversa ao tocar na foto
-        do perfil. A data e a hora apresentadas serão atualizadas
-        automaticamente quando a mensagem aparecer.
-      </p>
+  <label class="field-label" for="sender-name">
+    Nome mostrado na conversa
+  </label>
 
-      <div class="editor" id="message-editor"
-           contenteditable="true"
-           role="textbox"
-           aria-multiline="true"
-           data-placeholder="Escreve aqui a mensagem…"></div>
+  <input class="text-field" id="sender-name"
+         maxlength="40" placeholder="Ex.: M-Pesa">
 
-      <div class="toolbar">
-        <button type="button" id="underline" title="Sublinhar texto">
-          <u>U</u>
-        </button>
-        <span>Seleciona um trecho e toca em U para o sublinhar.</span>
-      </div>
-
-      <div class="dialog-actions">
-        <button id="cancel-message">Cancelar</button>
-        <button class="save" id="save-message">Guardar mensagem</button>
-      </div>
-    </section>
+  <div class="setting-row">
+    <label for="font-size">Tamanho das palavras</label>
+    <output id="font-output"></output>
+    <input id="font-size" type="range"
+           min="14" max="28" value="20">
   </div>
 
-  <!-- PERSONALIZAR APARÊNCIA -->
+  <div class="setting-row">
+    <label for="bubble-width">Largura dos quadros</label>
+    <output id="width-output"></output>
+    <input id="bubble-width" type="range"
+           min="60" max="100" value="83">
+  </div>
 
-  <div class="modal" id="settings-modal" hidden>
+  <div class="setting-row">
+    <label for="bubble-height">Altura mínima dos quadros</label>
+    <output id="height-output"></output>
+    <input id="bubble-height" type="range"
+           min="0" max="120" value="0">
+  </div>
+
+  <div class="dialog-actions">
+    <button id="cancel-settings">Cancelar</button>
+    <button class="save" id="save-settings">Guardar definições</button>
+  </div>
+</section>
+
+  </div>  <!-- EDITAR RODAPÉ -->  <div class="modal" id="footer-modal" hidden>
     <section class="dialog" role="dialog" aria-modal="true"
-             aria-labelledby="settings-title">
+             aria-labelledby="footer-title">  <h2 id="footer-title">Editar texto inferior</h2>
 
-      <h2 id="settings-title">Personalizar aparência</h2>
+  <p>
+    Edita o aviso principal e o texto complementar nesta janela.
+    Podes organizar as frases em linhas diferentes.
+  </p>
 
-      <p>
-        Altera o nome e o tamanho das mensagens. O rodapé também
-        acompanha o tamanho das palavras.
-      </p>
+  <label class="field-label" for="footer-editor">
+    Texto principal
+  </label>
 
-      <label class="field-label" for="sender-name">
-        Nome mostrado na conversa
-      </label>
+  <div class="editor" id="footer-editor"
+       contenteditable="true"
+       role="textbox"
+       aria-multiline="true"
+       data-placeholder="Escreve o texto principal…"></div>
 
-      <input class="text-field" id="sender-name"
-             maxlength="40" placeholder="Ex.: M-Pesa">
+  <label class="field-label" for="extra-editor">
+    Texto complementar
+  </label>
 
-      <div class="setting-row">
-        <label for="font-size">Tamanho das palavras</label>
-        <output id="font-output"></output>
-        <input id="font-size" type="range"
-               min="14" max="28" value="20">
-      </div>
+  <div class="editor" id="extra-editor"
+       contenteditable="true"
+       role="textbox"
+       aria-multiline="true"
+       data-placeholder="Escreve o texto complementar…"></div>
 
-      <div class="setting-row">
-        <label for="bubble-width">Largura dos quadros</label>
-        <output id="width-output"></output>
-        <input id="bubble-width" type="range"
-               min="60" max="100" value="83">
-      </div>
-
-      <div class="setting-row">
-        <label for="bubble-height">Altura mínima dos quadros</label>
-        <output id="height-output"></output>
-        <input id="bubble-height" type="range"
-               min="0" max="120" value="0">
-      </div>
-
-      <div class="dialog-actions">
-        <button id="cancel-settings">Cancelar</button>
-        <button class="save" id="save-settings">Guardar definições</button>
-      </div>
-    </section>
+  <div class="dialog-actions">
+    <button id="clear-footer">Apagar textos</button>
+    <button id="cancel-footer">Cancelar</button>
+    <button class="save" id="save-footer">Guardar textos</button>
   </div>
+</section>
 
-  <!-- EDITAR RODAPÉ -->
-
-  <div class="modal" id="footer-modal" hidden>
+  </div>  <!-- EDITAR TODA A ÁREA INFERIOR -->  <div class="modal" id="page-modal" hidden>
     <section class="dialog" role="dialog" aria-modal="true"
-             aria-labelledby="footer-title">
+             aria-labelledby="page-title">  <h2 id="page-title">Editar textos da página</h2>
 
-      <h2 id="footer-title">Editar texto inferior</h2>
+  <p>
+    Personaliza todos os textos da área inferior no mesmo lugar.
+    Mantém as frases claras e usa linhas separadas quando
+    necessário para distribuir o conteúdo pelo espaço disponível.
+  </p>
 
-      <p>Escreve o texto que pretendes apresentar.</p>
+  <label class="field-label" for="page-main-editor">
+    Texto principal
+  </label>
 
-      <div class="editor" id="footer-editor"
-           contenteditable="true"
-           role="textbox"
-           aria-multiline="true"
-           data-placeholder="Escreve o texto inferior…"></div>
+  <div class="editor" id="page-main-editor"
+       contenteditable="true"
+       role="textbox"
+       aria-multiline="true"
+       data-placeholder="Escreve o texto principal…"></div>
 
-      <div class="dialog-actions">
-        <button id="clear-footer">Apagar texto</button>
-        <button id="cancel-footer">Cancelar</button>
-        <button class="save" id="save-footer">Guardar texto</button>
-      </div>
-    </section>
+  <label class="field-label" for="page-learn-editor">
+    Texto do Saiba mais
+  </label>
+
+  <input class="text-field" id="page-learn-editor"
+         maxlength="120"
+         placeholder="Ex.: Saiba mais sobre esta informação">
+
+  <label class="field-label" for="page-extra-editor">
+    Texto complementar
+  </label>
+
+  <div class="editor" id="page-extra-editor"
+       contenteditable="true"
+       role="textbox"
+       aria-multiline="true"
+       data-placeholder="Adiciona aqui outra informação…"></div>
+
+  <div class="field-label">Alinhamento dos textos</div>
+
+  <div class="alignment-options">
+    <button type="button" data-page-align="left">Esquerda</button>
+    <button type="button" data-page-align="center">Centro</button>
+    <button type="button" data-page-align="right">Direita</button>
   </div>
 
-  <!-- EDITAR OU ELIMINAR SAIBA MAIS -->
+  <div class="dialog-actions">
+    <button id="cancel-page">Cancelar</button>
+    <button class="save" id="save-page">Guardar página</button>
+  </div>
+</section>
 
-  <div class="modal" id="learn-modal" hidden>
+  </div>  <!-- EDITAR SAIBA MAIS -->  <div class="modal" id="learn-modal" hidden>
     <section class="dialog" role="dialog" aria-modal="true"
-             aria-labelledby="learn-title">
+             aria-labelledby="learn-title">  <h2 id="learn-title">Editar texto e posição</h2>
 
-      <h2 id="learn-title">Editar texto e posição</h2>
+  <p>
+    Altera o texto do Saiba mais, escolhe a posição ou elimina
+    o texto para o ocultar. As alterações também aparecem na
+    área de edição da página.
+  </p>
 
-      <p>
-        Podes alterar o texto, mudar a posição ou eliminar
-        completamente o botão. Quando estiver visível, ficará azul.
-      </p>
+  <label class="field-label" for="learn-editor">Texto do botão</label>
 
-      <label class="field-label" for="learn-editor">Texto do botão</label>
+  <input
+    class="text-field"
+    id="learn-editor"
+    type="text"
+    maxlength="120"
+    placeholder="Ex.: Saiba mais sobre esta informação"
+  >
 
-      <input
-        class="text-field"
-        id="learn-editor"
-        type="text"
-        maxlength="120"
-        placeholder="Escreve o texto que pretendes"
-      >
+  <div class="field-label">Posição do texto</div>
 
-      <div class="field-label">Posição do texto</div>
-
-      <div class="alignment-options">
-        <button type="button" data-align="left" id="align-left">Esquerda</button>
-        <button type="button" data-align="center" id="align-center">Centro</button>
-        <button type="button" data-align="right" id="align-right">Direita</button>
-      </div>
-
-      <div class="preview-label">Pré-visualização</div>
-
-      <div class="learn-preview" id="learn-preview">Saiba mais</div>
-
-      <div class="dialog-actions">
-        <button id="clear-learn">Eliminar texto</button>
-        <button id="cancel-learn">Cancelar</button>
-        <button class="save" id="save-learn">Guardar alterações</button>
-      </div>
-    </section>
+  <div class="alignment-options">
+    <button type="button" data-align="left" id="align-left">Esquerda</button>
+    <button type="button" data-align="center" id="align-center">Centro</button>
+    <button type="button" data-align="right" id="align-right">Direita</button>
   </div>
 
-  <div class="toast" id="toast" hidden></div>
+  <div class="preview-label">Pré-visualização</div>
 
-</main>
+  <div class="learn-preview" id="learn-preview">Saiba mais</div>
 
-<script>
+  <div class="dialog-actions">
+    <button id="clear-learn">Eliminar texto</button>
+    <button id="cancel-learn">Cancelar</button>
+    <button class="save" id="save-learn">Guardar alterações</button>
+  </div>
+</section>
+
+  </div>  <!-- GESTÃO DA FOTOGRAFIA -->  <div class="modal" id="photo-modal" hidden>
+    <section class="dialog" role="dialog" aria-modal="true"
+             aria-labelledby="photo-title">  <h2 id="photo-title">Foto de perfil</h2>
+
+  <p>
+    Escolhe uma fotografia da galeria do teu dispositivo.
+    A imagem selecionada será colocada diretamente no perfil.
+  </p>
+
+  <div class="photo-preview">
+    <img id="photo-modal-preview" alt="Pré-visualização da fotografia" hidden>
+  </div>
+
+  <div class="photo-actions">
+    <button class="primary" id="select-gallery">Escolher da galeria</button>
+    <button id="delete-photo-modal">Remover fotografia</button>
+  </div>
+
+  <div class="dialog-actions">
+    <button id="cancel-photo">Fechar</button>
+  </div>
+</section>
+
+  </div>  <div class="toast" id="toast" hidden></div></main><script>
 const $ = id => document.getElementById(id);
 
 const STORE_MESSAGES = 'mpesa_demo_messages_v3';
@@ -772,8 +916,10 @@ const STORE_HISTORY = 'mpesa_demo_history_v3';
 const STORE_SETTINGS = 'mpesa_demo_settings_v3';
 const STORE_PHOTO = 'mpesa_demo_profile_photo_v3';
 const STORE_FOOTER = 'mpesa_demo_footer_text_v3';
+const STORE_EXTRA = 'mpesa_demo_footer_extra_v1';
 const STORE_LEARN_TEXT = 'mpesa_demo_learn_text_v1';
 const STORE_LEARN_ALIGN = 'mpesa_demo_learn_align_v1';
+const STORE_PAGE_ALIGN = 'mpesa_demo_page_align_v1';
 
 function readStore(key, fallback){
   try{
@@ -794,14 +940,21 @@ let settings = readStore(STORE_SETTINGS, {
   height:0
 });
 
+if(!Array.isArray(pending)) pending = [];
+if(!Array.isArray(history)) history = [];
+
 const menu = $('menu');
 const chat = $('chat');
 const editor = $('message-editor');
 const toast = $('toast');
 
 function persist(){
-  localStorage.setItem(STORE_MESSAGES, JSON.stringify(pending));
-  localStorage.setItem(STORE_HISTORY, JSON.stringify(history));
+  try{
+    localStorage.setItem(STORE_MESSAGES, JSON.stringify(pending));
+    localStorage.setItem(STORE_HISTORY, JSON.stringify(history));
+  }catch{
+    notify('Não foi possível guardar todos os dados.');
+  }
 }
 
 function notify(message){
@@ -861,7 +1014,21 @@ function safeHtml(value){
   return clean(parsed.body).replace(/(?:<br>)+$/, '');
 }
 
-/* NÚMERO DE MENSAGENS GUARDADAS */
+/* NORMALIZA A EDIÇÃO DOS TEXTOS */
+
+function editorText(id){
+  return safeHtml($(id).innerHTML);
+}
+
+function setEditorHtml(id, value){
+  $(id).innerHTML = safeHtml(value || '');
+}
+
+function setTextContent(id, value){
+  $(id).textContent = String(value || '');
+}
+
+/* CONTAGEM DE MENSAGENS GUARDADAS */
 
 function updatePendingCount(){
   $('pending-count').textContent =
@@ -890,11 +1057,6 @@ function applySettings(){
     (Number(settings.height) || 0) + 'px'
   );
 
-  /*
-    O rodapé acompanha o tamanho escolhido para as mensagens.
-    A escala afeta o espaçamento, enquanto a fonte usa a
-    mesma referência de tamanho.
-  */
   const scale = font / 20;
 
   document.documentElement.style.setProperty(
@@ -903,7 +1065,7 @@ function applySettings(){
   );
 }
 
-/* FORMATA DATA E HORA DO MOMENTO EM QUE A MENSAGEM É APRESENTADA */
+/* DATA E HORA */
 
 function formatCurrentDateTime(timestamp){
   const dateValue = new Date(timestamp);
@@ -923,20 +1085,8 @@ function formatCurrentDateTime(timestamp){
   return date + ' · ' + time;
 }
 
-/*
-  Atualiza as referências de data e hora dentro do texto escrito.
-  Isto permite corrigir horas introduzidas manualmente nos formatos
-  mais comuns, sem modificar números de telefone, códigos ou valores.
-*/
-
 function updateMessageDateTime(html, timestamp){
   const current = new Date(timestamp);
-
-  const dateDMY = [
-    String(current.getDate()).padStart(2,'0'),
-    String(current.getMonth()+1).padStart(2,'0'),
-    String(current.getFullYear()).slice(-2)
-  ].join('/');
 
   const dateDMY4 = [
     String(current.getDate()).padStart(2,'0'),
@@ -976,12 +1126,6 @@ function updateMessageDateTime(html, timestamp){
   ];
 
   let result = String(html || '');
-
-  /*
-    Corrige texto visível dentro das mensagens.
-    A substituição é intencionalmente limitada a formatos de hora
-    e data; códigos, telefones e montantes não são recalculados.
-  */
 
   replacements.forEach(item=>{
     result = result.replace(item.pattern, item.value);
@@ -1033,7 +1177,7 @@ function renderHistory(){
   });
 }
 
-/* FOTO DE PERFIL */
+/* FOTOGRAFIA DE PERFIL */
 
 function hasProfilePhoto(){
   return Boolean(localStorage.getItem(STORE_PHOTO));
@@ -1041,13 +1185,21 @@ function hasProfilePhoto(){
 
 function loadProfilePhoto(){
   const savedPhoto = localStorage.getItem(STORE_PHOTO);
+  const profileImage = $('profile-image');
+  const preview = $('photo-modal-preview');
 
   if(savedPhoto){
-    $('profile-image').src = savedPhoto;
-    $('profile-image').hidden = false;
+    profileImage.src = savedPhoto;
+    profileImage.hidden = false;
+
+    preview.src = savedPhoto;
+    preview.hidden = false;
   }else{
-    $('profile-image').removeAttribute('src');
-    $('profile-image').hidden = true;
+    profileImage.removeAttribute('src');
+    profileImage.hidden = true;
+
+    preview.removeAttribute('src');
+    preview.hidden = true;
   }
 }
 
@@ -1057,19 +1209,25 @@ function openPhotoPicker(){
   input.click();
 }
 
+function openPhotoManager(){
+  menu.hidden = true;
+  loadProfilePhoto();
+  $('photo-modal').hidden = false;
+}
+
 $('photo-input').addEventListener('change', event=>{
   const file = event.target.files && event.target.files[0];
 
   if(!file) return;
 
   if(!file.type.startsWith('image/')){
-    notify('Seleciona um ficheiro de imagem.');
+    notify('Seleciona uma imagem da galeria.');
     event.target.value = '';
     return;
   }
 
   if(file.size > 8 * 1024 * 1024){
-    notify('A imagem deve ter menos de 8 MB.');
+    notify('Escolhe uma imagem com menos de 8 MB.');
     event.target.value = '';
     return;
   }
@@ -1077,16 +1235,45 @@ $('photo-input').addEventListener('change', event=>{
   const reader = new FileReader();
 
   reader.onload = ()=>{
-    try{
-      localStorage.setItem(STORE_PHOTO, reader.result);
+    const image = new Image();
 
-      $('profile-image').src = reader.result;
-      $('profile-image').hidden = false;
+    image.onload = ()=>{
+      try{
+        /*
+          Redimensiona imagens grandes para reduzir o armazenamento,
+          preservando a proporção da fotografia.
+        */
+        const maxDimension = 1200;
+        const ratio = Math.min(
+          1,
+          maxDimension / Math.max(image.naturalWidth, image.naturalHeight)
+        );
 
-      notify('Foto de perfil guardada.');
-    }catch{
-      notify('Não foi possível guardar a imagem. Escolhe uma imagem menor.');
-    }
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * ratio));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * ratio));
+
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+        const compressed = canvas.toDataURL('image/jpeg', 0.88);
+
+        localStorage.setItem(STORE_PHOTO, compressed);
+
+        loadProfilePhoto();
+        $('photo-modal').hidden = true;
+
+        notify('Fotografia adicionada ao perfil.');
+      }catch{
+        notify('Não foi possível guardar a imagem. Escolhe uma imagem menor.');
+      }
+    };
+
+    image.onerror = ()=>{
+      notify('Não foi possível abrir esta imagem.');
+    };
+
+    image.src = reader.result;
   };
 
   reader.onerror = ()=>{
@@ -1097,20 +1284,39 @@ $('photo-input').addEventListener('change', event=>{
   event.target.value = '';
 });
 
-/*
-  O botão Foto de perfil abre a galeria quando ainda não há imagem.
-  Se já houver fotografia, abre a área de adicionar mensagem.
-*/
+$('change-photo').addEventListener('click', openPhotoManager);
 
-$('change-photo').addEventListener('click', ()=>{
+$('select-gallery').addEventListener('click', openPhotoPicker);
+
+function removeProfilePhoto(){
+  localStorage.removeItem(STORE_PHOTO);
+  loadProfilePhoto();
+  $('photo-modal').hidden = true;
+  notify('Fotografia removida.');
+}
+
+$('remove-photo').addEventListener('click', ()=>{
   menu.hidden = true;
 
   if(!hasProfilePhoto()){
-    openPhotoPicker();
+    notify('Ainda não existe uma fotografia no perfil.');
     return;
   }
 
-  openMessageEditor();
+  removeProfilePhoto();
+});
+
+$('delete-photo-modal').addEventListener('click', ()=>{
+  if(!hasProfilePhoto()){
+    notify('Ainda não existe uma fotografia no perfil.');
+    return;
+  }
+
+  removeProfilePhoto();
+});
+
+$('cancel-photo').addEventListener('click', ()=>{
+  $('photo-modal').hidden = true;
 });
 
 /* MENU PRINCIPAL */
@@ -1145,12 +1351,7 @@ $('appearance').addEventListener('click', ()=>{
 
 $('edit-footer').addEventListener('click', ()=>{
   menu.hidden = true;
-
-  $('footer-editor').innerHTML = safeHtml(
-    $('footer-text').innerHTML
-  );
-
-  $('footer-modal').hidden = false;
+  openFooterEditor();
 });
 
 $('edit-learn-more').addEventListener('click', ()=>{
@@ -1158,9 +1359,14 @@ $('edit-learn-more').addEventListener('click', ()=>{
   openLearnEditor();
 });
 
+$('edit-page').addEventListener('click', ()=>{
+  menu.hidden = true;
+  openPageEditor();
+});
+
 $('exit').addEventListener('click', ()=>{
   menu.hidden = true;
-  notify('Menu fechado');
+  notify('Menu fechado.');
 });
 
 /* GUARDAR MENSAGEM */
@@ -1240,13 +1446,20 @@ $('save-settings').addEventListener('click', ()=>{
   notify('Definições guardadas.');
 });
 
-/* TEXTO INFERIOR EDITÁVEL */
+/* TEXTOS DO RODAPÉ */
 
 const footerText = $('footer-text');
+const footerExtra = $('footer-extra');
+
 const savedFooter = localStorage.getItem(STORE_FOOTER);
+const savedExtra = localStorage.getItem(STORE_EXTRA);
 
 if(savedFooter !== null){
   footerText.innerHTML = safeHtml(savedFooter);
+}
+
+if(savedExtra !== null){
+  footerExtra.innerHTML = safeHtml(savedExtra);
 }
 
 function saveFooterText(value){
@@ -1256,15 +1469,31 @@ function saveFooterText(value){
   localStorage.setItem(STORE_FOOTER, clean);
 }
 
+function saveExtraText(value){
+  const clean = safeHtml(value);
+
+  footerExtra.innerHTML = clean;
+  localStorage.setItem(STORE_EXTRA, clean);
+}
+
+function openFooterEditor(){
+  setEditorHtml('footer-editor', footerText.innerHTML);
+  setEditorHtml('extra-editor', footerExtra.innerHTML);
+
+  $('footer-modal').hidden = false;
+}
+
 $('save-footer').addEventListener('click', ()=>{
   saveFooterText($('footer-editor').innerHTML);
+  saveExtraText($('extra-editor').innerHTML);
 
   $('footer-modal').hidden = true;
-  notify('Texto inferior guardado.');
+  notify('Textos inferiores guardados.');
 });
 
 $('clear-footer').addEventListener('click', ()=>{
   $('footer-editor').innerHTML = '';
+  $('extra-editor').innerHTML = '';
   $('footer-editor').focus();
 });
 
@@ -1279,7 +1508,14 @@ footerText.addEventListener('input', ()=>{
   );
 });
 
-/* EDITAR TEXTO, POSIÇÃO E VISIBILIDADE DE SAIBA MAIS */
+footerExtra.addEventListener('input', ()=>{
+  localStorage.setItem(
+    STORE_EXTRA,
+    safeHtml(footerExtra.innerHTML)
+  );
+});
+
+/* EDITAR SAIBA MAIS */
 
 const learnMore = $('learn-more');
 const learnWrap = $('learn-more-wrap');
@@ -1291,14 +1527,10 @@ if(learnText === null){
 }
 
 let learnAlign = localStorage.getItem(STORE_LEARN_ALIGN) || 'left';
+let pageAlign = localStorage.getItem(STORE_PAGE_ALIGN) || 'left';
 
 function applyLearnMore(){
   learnMore.textContent = learnText;
-
-  /* Quando existe texto, o link permanece azul. */
-  learnMore.classList.add('is-blue');
-
-  /* Texto vazio elimina visualmente o botão. */
   learnMore.hidden = !String(learnText).trim();
 
   learnWrap.style.justifyContent = learnAlign;
@@ -1358,19 +1590,17 @@ $('cancel-learn').addEventListener('click', ()=>{
 });
 
 $('save-learn').addEventListener('click', ()=>{
-  learnText = $('learn-editor').value;
+  learnText = $('learn-editor').value.trim();
   applyLearnMore();
 
   $('learn-modal').hidden = true;
 
   notify(
-    learnText.trim()
+    learnText
       ? 'Texto e posição guardados.'
       : 'Texto eliminado.'
   );
 });
-
-/* CLICAR NO TEXTO SAIBA MAIS */
 
 learnMore.addEventListener('click', event=>{
   event.preventDefault();
@@ -1390,6 +1620,80 @@ learnMore.addEventListener('keydown', event=>{
   }
 });
 
+/* EDITAR TODA A ÁREA INFERIOR NUMA SÓ PÁGINA */
+
+function applyPageAlignment(){
+  const footerContent = document.querySelector('.footer-content');
+
+  footerContent.style.textAlign = pageAlign;
+  footerText.style.textAlign = pageAlign;
+  footerExtra.style.textAlign = pageAlign;
+  learnWrap.style.justifyContent = pageAlign;
+
+  learnAlign = pageAlign;
+
+  applyLearnMore();
+
+  document.querySelectorAll('[data-page-align]').forEach(button=>{
+    const active = button.dataset.pageAlign === pageAlign;
+
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+
+  localStorage.setItem(STORE_PAGE_ALIGN, pageAlign);
+}
+
+function openPageEditor(){
+  setEditorHtml('page-main-editor', footerText.innerHTML);
+  $('page-learn-editor').value = learnText;
+  setEditorHtml('page-extra-editor', footerExtra.innerHTML);
+
+  document.querySelectorAll('[data-page-align]').forEach(button=>{
+    button.classList.toggle(
+      'active',
+      button.dataset.pageAlign === pageAlign
+    );
+  });
+
+  $('page-modal').hidden = false;
+}
+
+document.querySelectorAll('[data-page-align]').forEach(button=>{
+  button.addEventListener('click', ()=>{
+    pageAlign = button.dataset.pageAlign;
+
+    document.querySelectorAll('[data-page-align]').forEach(item=>{
+      item.classList.toggle('active', item === button);
+      item.setAttribute(
+        'aria-pressed',
+        String(item === button)
+      );
+    });
+  });
+});
+
+$('cancel-page').addEventListener('click', ()=>{
+  $('page-modal').hidden = true;
+  pageAlign = localStorage.getItem(STORE_PAGE_ALIGN) || 'left';
+});
+
+$('save-page').addEventListener('click', ()=>{
+  saveFooterText($('page-main-editor').innerHTML);
+
+  learnText = $('page-learn-editor').value.trim();
+  localStorage.setItem(STORE_LEARN_TEXT, learnText);
+
+  saveExtraText($('page-extra-editor').innerHTML);
+
+  applyLearnMore();
+  applyPageAlignment();
+
+  $('page-modal').hidden = true;
+
+  notify('Todos os textos da página foram guardados.');
+});
+
 /* PERFIL: MOSTRAR PRÓXIMA MENSAGEM */
 
 $('avatar').addEventListener('click', ()=>{
@@ -1399,19 +1703,9 @@ $('avatar').addEventListener('click', ()=>{
   }
 
   const message = pending.shift();
-
-  /*
-    Regista o instante em que o utilizador toca no perfil.
-    A data/hora do cabeçalho da mensagem usa esse instante.
-  */
   const now = new Date();
-  message.receivedAt = now.toISOString();
 
-  /*
-    Corrige referências de data/hora comuns que tenham sido escritas
-    manualmente no corpo da mensagem. Não altera montantes nem
-    códigos/telefones que não estejam no formato de data/hora.
-  */
+  message.receivedAt = now.toISOString();
   message.html = updateMessageDateTime(message.html, now);
 
   history.push(message);
@@ -1454,6 +1748,8 @@ document.addEventListener('keydown', event=>{
     $('settings-modal').hidden = true;
     $('footer-modal').hidden = true;
     $('learn-modal').hidden = true;
+    $('photo-modal').hidden = true;
+    $('page-modal').hidden = true;
   }
 });
 
@@ -1464,7 +1760,6 @@ renderHistory();
 updatePendingCount();
 loadProfilePhoto();
 applyLearnMore();
-</script>
-
-</body>
+applyPageAlignment();
+</script></body>
   </html>
