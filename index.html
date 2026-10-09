@@ -149,9 +149,7 @@ body{display:grid;place-items:center}
   cursor:pointer;
 }
 
-.bubble a{
-  overflow-wrap:anywhere;
-}
+.bubble a{overflow-wrap:anywhere}
 
 .bubble.editable-message{
   -webkit-user-select:none;
@@ -646,7 +644,7 @@ body{display:grid;place-items:center}
       fill="currentColor" aria-hidden="true">
       <path d="M12 2.7a9.3 9.3 0 1 0 0 18.6 9.3 9.3 0 0 0 0-18.6Zm0 3.4a3.35 3.35 0 1 1 0 6.7 3.35 3.35 0 0 1 0-6.7Zm0 13a7.05 7.05 0 0 1-5.62-2.8c.12-1.86 3.75-2.88 5.62-2.88s5.5 1.02 5.62 2.88A7.05 7.05 0 0 1 12 19.1Z"/>
     </svg>
-    <img id="profile-image" alt="Foto de perfil" hidden>
+    <img id="profile-image" alt="Foto de perfil">
   </button>
 
   <input type="file" id="photo-input" accept="image/*" hidden>
@@ -730,7 +728,6 @@ Contacte-o diretamente.</div>
   <button id="exit">Sair do menu</button>
 </div>
 
-<!-- ADICIONAR OU EDITAR MENSAGEM -->
 <div class="modal" id="message-modal" hidden>
   <section class="dialog" role="dialog" aria-modal="true"
     aria-labelledby="message-title">
@@ -757,7 +754,6 @@ Contacte-o diretamente.</div>
   </section>
 </div>
 
-<!-- PERSONALIZAR APARÊNCIA -->
 <div class="modal" id="settings-modal" hidden>
   <section class="dialog" role="dialog" aria-modal="true"
     aria-labelledby="settings-title">
@@ -793,7 +789,6 @@ Contacte-o diretamente.</div>
   </section>
 </div>
 
-<!-- EDITAR RODAPÉ -->
 <div class="modal" id="footer-modal" hidden>
   <section class="dialog" role="dialog" aria-modal="true"
     aria-labelledby="footer-title">
@@ -818,7 +813,6 @@ Contacte-o diretamente.</div>
   </section>
 </div>
 
-<!-- EDITAR TODA A ÁREA INFERIOR -->
 <div class="modal" id="page-modal" hidden>
   <section class="dialog" role="dialog" aria-modal="true"
     aria-labelledby="page-title">
@@ -853,7 +847,6 @@ Contacte-o diretamente.</div>
   </section>
 </div>
 
-<!-- EDITAR SAIBA MAIS -->
 <div class="modal" id="learn-modal" hidden>
   <section class="dialog" role="dialog" aria-modal="true"
     aria-labelledby="learn-title">
@@ -882,7 +875,6 @@ Contacte-o diretamente.</div>
   </section>
 </div>
 
-<!-- GESTÃO DA FOTOGRAFIA -->
 <div class="modal" id="photo-modal" hidden>
   <section class="dialog" role="dialog" aria-modal="true"
     aria-labelledby="photo-title">
@@ -890,7 +882,7 @@ Contacte-o diretamente.</div>
     <p>Escolhe uma fotografia da galeria do teu dispositivo.</p>
 
     <div class="photo-preview">
-      <img id="photo-modal-preview" alt="Pré-visualização da fotografia" hidden>
+      <img id="photo-modal-preview" alt="Pré-visualização da fotografia">
     </div>
 
     <div class="photo-actions">
@@ -910,6 +902,9 @@ Contacte-o diretamente.</div>
 
 <script>
 const $ = id => document.getElementById(id);
+
+/* ÍCONE DE PERFIL SUBSTITUÍDO PELA IMAGEM ENVIADA */
+const DEFAULT_PROFILE_PHOTO = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 1200 1248%22%3E%3Crect width=%221200%22 height=%221248%22 fill=%22black%22/%3E%3Ccircle cx=%22600%22 cy=%22624%22 r=%22665%22 fill=%22%232e2e2e%22/%3E%3Ccircle cx=%22603%22 cy=%22454%22 r=%22132%22 fill=%22%23999999%22/%3E%3Cpath d=%22M373 900 C373 770 478 665 603 665 C728 665 833 770 833 900 L833 920 C833 950 704 982 603 982 C502 982 373 950 373 920 Z%22 fill=%22%23999999%22/%3E%3C/svg%3E';
 
 const STORE_MESSAGES = 'mpesa_demo_messages_v3';
 const STORE_HISTORY = 'mpesa_demo_history_v3';
@@ -981,6 +976,119 @@ function escapeHtml(value){
   })[char]);
 }
 
+function autoUnderlineNumbersAndDates(html){
+  const parsed = new DOMParser().parseFromString(
+    String(html || ''),
+    'text/html'
+  );
+
+  const dateTimePattern =
+    /\b\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4}(?:\s*(?:às|as)?\s*\d{1,2}:\d{2}\s*(?:AM|PM)?)?|\b\d{1,2}:\d{2}\s*(?:AM|PM)\b/gi;
+
+  const phonePattern =
+    /(?:\+\d{1,3}[\s.-]?)?\b\d{8,15}\b/g;
+
+  const walker = parsed.createTreeWalker(
+    parsed.body,
+    NodeFilter.SHOW_TEXT
+  );
+
+  const textNodes = [];
+  let currentNode;
+
+  while((currentNode = walker.nextNode())){
+    if(currentNode.parentElement &&
+       currentNode.parentElement.closest(
+         '.message-underline,a,script,style'
+       )){
+      continue;
+    }
+
+    textNodes.push(currentNode);
+  }
+
+  textNodes.forEach(textNode=>{
+    const text = textNode.nodeValue;
+    const matches = [];
+
+    function collect(pattern,priority){
+      pattern.lastIndex = 0;
+      let match;
+
+      while((match = pattern.exec(text))){
+        if(!match[0]) break;
+
+        matches.push({
+          start:match.index,
+          end:match.index+match[0].length,
+          value:match[0],
+          priority
+        });
+
+        if(pattern.lastIndex === match.index){
+          pattern.lastIndex++;
+        }
+      }
+    }
+
+    collect(dateTimePattern,2);
+    collect(phonePattern,1);
+
+    if(!matches.length) return;
+
+    matches.sort((a,b)=>
+      a.start-b.start ||
+      b.priority-a.priority ||
+      b.end-a.end
+    );
+
+    const filtered = [];
+
+    matches.forEach(match=>{
+      const previous = filtered[filtered.length-1];
+
+      if(previous && match.start < previous.end){
+        if(match.priority > previous.priority){
+          filtered[filtered.length-1] = match;
+        }
+        return;
+      }
+
+      filtered.push(match);
+    });
+
+    if(!filtered.length) return;
+
+    const fragment = document.createDocumentFragment();
+    let position = 0;
+
+    filtered.forEach(match=>{
+      if(match.start > position){
+        fragment.append(
+          document.createTextNode(text.slice(position,match.start))
+        );
+      }
+
+      const underline = document.createElement('span');
+      underline.className = 'message-underline';
+      underline.textContent = match.value;
+      fragment.append(underline);
+
+      position = match.end;
+    });
+
+    if(position < text.length){
+      fragment.append(
+        document.createTextNode(text.slice(position))
+      );
+    }
+
+    textNode.parentNode.replaceChild(fragment,textNode);
+  });
+
+  return parsed.body.innerHTML;
+}
+
 function safeHtml(value){
   const parsed = new DOMParser().parseFromString(
     String(value || ''),'text/html'
@@ -998,8 +1106,8 @@ function safeHtml(value){
 
         if(tag === 'br'){
           output += '<br>';
-        }else if(['u','b','strong','i','em','a'].includes(tag)){
-          if(tag === 'a'){
+        }else if(['u','b','strong','i','em','a','span'].includes(tag)){
+          if(tag === 'a' || child.classList.contains('message-underline')){
             output += '<span class="message-underline">' + inner + '</span>';
           }else{
             output += '<' + tag + '>' + inner + '</' + tag + '>';
@@ -1016,6 +1124,10 @@ function safeHtml(value){
   }
 
   return clean(parsed.body).replace(/(?:<br>)+$/,'');
+}
+
+function cleanMessageHtml(value){
+  return autoUnderlineNumbersAndDates(safeHtml(value));
 }
 
 function editorText(id){
@@ -1105,10 +1217,8 @@ function updateMessageDateTime(html,timestamp){
     result = result.replace(item.pattern,item.value);
   });
 
-  return result;
+  return cleanMessageHtml(result);
 }
-
-/* GUARDAR O HTML ORIGINAL DAS MENSAGENS PARA PERMITIR EDITAR E APAGAR */
 
 function saveOriginalMessages(){
   const originals = Array.from(
@@ -1125,6 +1235,12 @@ function loadOriginalMessages(){
   const saved = readStore(STORE_ORIGINALS,null);
 
   if(!Array.isArray(saved) || !saved.length){
+    document.querySelectorAll(
+      '#chat > .bubble.editable-message'
+    ).forEach(bubble=>{
+      bubble.innerHTML = cleanMessageHtml(bubble.innerHTML);
+    });
+
     saveOriginalMessages();
     return;
   }
@@ -1135,7 +1251,7 @@ function loadOriginalMessages(){
     );
 
     if(bubble){
-      bubble.innerHTML = safeHtml(item.html);
+      bubble.innerHTML = cleanMessageHtml(item.html);
     }else{
       const target = item.id === 'original-1'
         ? document.querySelector('[data-message-id="original-1"]')
@@ -1143,12 +1259,16 @@ function loadOriginalMessages(){
           ? document.querySelector('[data-message-id="original-2"]')
           : null;
 
-      if(target) target.innerHTML = safeHtml(item.html);
+      if(target) target.innerHTML = cleanMessageHtml(item.html);
     }
   });
-}
 
-/* RENDERIZAR MENSAGENS ADICIONADAS */
+  document.querySelectorAll(
+    '#chat > .bubble.editable-message'
+  ).forEach(bubble=>{
+    bubble.innerHTML = cleanMessageHtml(bubble.innerHTML);
+  });
+}
 
 function renderHistory(){
   const destination = $('new-messages');
@@ -1173,14 +1293,17 @@ function renderHistory(){
     if(message.receivedAt){
       const date = document.createElement('div');
       date.className = 'date';
-      date.textContent = formatCurrentDateTime(message.receivedAt);
+
+      const dateText = formatCurrentDateTime(message.receivedAt);
+      date.innerHTML = cleanMessageHtml(dateText);
+
       wrap.append(date);
     }
 
     const bubble = document.createElement('div');
     bubble.className = 'bubble editable-message';
     bubble.dataset.messageId = 'history-'+index;
-    bubble.innerHTML = safeHtml(message.html);
+    bubble.innerHTML = cleanMessageHtml(message.html);
 
     wrap.append(bubble);
 
@@ -1192,8 +1315,6 @@ function renderHistory(){
     destination.append(wrap);
   });
 }
-
-/* SELEÇÃO POR PRESSÃO LONGA */
 
 function removeMessageActions(){
   document.querySelectorAll('.message-actions').forEach(item=>item.remove());
@@ -1371,7 +1492,7 @@ function attachMessageInteractions(root=document){
   });
 }
 
-/* FOTOGRAFIA DE PERFIL */
+/* FOTO DE PERFIL */
 
 function hasProfilePhoto(){
   return Boolean(localStorage.getItem(STORE_PHOTO));
@@ -1379,20 +1500,17 @@ function hasProfilePhoto(){
 
 function loadProfilePhoto(){
   const savedPhoto = localStorage.getItem(STORE_PHOTO);
+
   const profileImage = $('profile-image');
   const preview = $('photo-modal-preview');
 
-  if(savedPhoto){
-    profileImage.src = savedPhoto;
-    profileImage.hidden = false;
-    preview.src = savedPhoto;
-    preview.hidden = false;
-  }else{
-    profileImage.removeAttribute('src');
-    profileImage.hidden = true;
-    preview.removeAttribute('src');
-    preview.hidden = true;
-  }
+  profileImage.src = savedPhoto || DEFAULT_PROFILE_PHOTO;
+  profileImage.hidden = false;
+
+  preview.src = savedPhoto || DEFAULT_PROFILE_PHOTO;
+  preview.hidden = false;
+
+  $('default-avatar').style.display = 'none';
 }
 
 function openPhotoPicker(){
@@ -1473,14 +1591,14 @@ function removeProfilePhoto(){
   localStorage.removeItem(STORE_PHOTO);
   loadProfilePhoto();
   $('photo-modal').hidden = true;
-  notify('Fotografia removida.');
+  notify('Fotografia padrão restaurada.');
 }
 
 $('remove-photo').addEventListener('click',()=>{
   menu.hidden = true;
 
   if(!hasProfilePhoto()){
-    notify('Ainda não existe uma fotografia no perfil.');
+    notify('A fotografia enviada já está definida como padrão.');
     return;
   }
 
@@ -1489,7 +1607,7 @@ $('remove-photo').addEventListener('click',()=>{
 
 $('delete-photo-modal').addEventListener('click',()=>{
   if(!hasProfilePhoto()){
-    notify('Ainda não existe uma fotografia no perfil.');
+    notify('A fotografia enviada já está definida como padrão.');
     return;
   }
 
@@ -1554,7 +1672,7 @@ $('exit').addEventListener('click',()=>{
   notify('Menu fechado.');
 });
 
-/* GUARDAR, EDITAR E CANCELAR MENSAGEM */
+/* MENSAGENS */
 
 $('cancel-message').addEventListener('click',()=>{
   $('message-modal').hidden = true;
@@ -1571,7 +1689,7 @@ $('underline').addEventListener('click',()=>{
 });
 
 $('save-message').addEventListener('click',()=>{
-  const html = safeHtml(editor.innerHTML);
+  const html = cleanMessageHtml(editor.innerHTML);
 
   if(!html.replace(/<br>/g,'').trim()){
     notify('Escreve uma mensagem antes de guardar.');
@@ -1600,6 +1718,8 @@ $('save-message').addEventListener('click',()=>{
     $('message-modal').hidden = true;
 
     attachMessageInteractions();
+    saveOriginalMessages();
+
     notify('Mensagem editada com sucesso.');
     return;
   }
